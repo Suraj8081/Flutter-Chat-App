@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:my_chat/screen/auth_screen.dart';
 import 'package:my_chat/widget/input_form_field.dart';
@@ -13,6 +15,7 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   late final GlobalKey _formkey;
+  File? _selectedFile;
 
   void _login() {
     moveTo(
@@ -42,10 +45,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
           children: [
             Expanded(
               flex: 1,
-              child: InkWell(
-                onTap: () {},
-                child: const CircleAvatar(
-                  radius: 50,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 60),
+                child: InkWell(
+                  onTap: () {
+                    showImagePicker(
+                      context,
+                      (selectedFile) {
+                        setState(() {
+                          _selectedFile = selectedFile;
+                        });
+                      },
+                    );
+                  },
+                  child: _selectedFile == null
+                      ? Container(
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
+                              color: getThemeColor(context).onPrimary,
+                              shape: BoxShape.circle),
+                          child: Center(
+                            child: Icon(
+                              Icons.person_add_alt,
+                              size: 60,
+                              color: getThemeColor(context).primary,
+                            ),
+                          ),
+                        )
+                      : CircleAvatar(
+                          radius: 50,
+                          backgroundImage: FileImage(
+                            _selectedFile!,
+                          ),
+                        ),
                 ),
               ),
             ),
@@ -100,7 +133,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         MyElevetedButton(
                           onPressed: () {},
-                          title: 'SignUp',
+                          title: 'Sign Up',
                         ),
                         const SizedBox(
                           height: 20,
