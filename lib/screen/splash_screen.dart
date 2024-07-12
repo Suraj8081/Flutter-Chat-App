@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:my_chat/screen/auth_screen.dart';
-import 'package:my_chat/widget/utils.dart';
+import 'package:my_chat/helper/utils.dart';
 
 class SplasScreen extends StatefulWidget {
   const SplasScreen({super.key});

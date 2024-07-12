@@ -1,10 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:my_chat/helper/validator.dart';
 import 'package:my_chat/screen/auth_screen.dart';
 import 'package:my_chat/widget/input_form_field.dart';
 import 'package:my_chat/widget/my_eleveted_button.dart';
-import 'package:my_chat/widget/utils.dart';
+import 'package:my_chat/helper/utils.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -14,7 +15,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  late final GlobalKey _formkey;
+  late final GlobalKey<FormState> _formkey;
   File? _selectedFile;
 
   void _login() {
@@ -24,10 +25,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
+  void _signUp() {
+    _formkey.currentState!.validate();
+  }
+
   @override
   void initState() {
     super.initState();
-    _formkey = GlobalKey();
+    _formkey = GlobalKey<FormState>();
   }
 
   @override
@@ -113,26 +118,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         const SizedBox(
                           height: 30,
                         ),
-                        const InputFormField(
+                        InputFormField(
                           lableText: 'Email',
-                          prefixIcon: Icon(Icons.email_outlined),
+                          prefixIcon: const Icon(Icons.email_outlined),
                           keyboardType: TextInputType.emailAddress,
+                          validator: (value) =>
+                              Validator.validateValue(value, forEmail: true),
                         ),
                         const SizedBox(
                           height: 20,
                         ),
-                        const InputFormField(
+                        InputFormField(
                           lableText: 'Password',
                           keyboardType: TextInputType.text,
-                          prefixIcon: Icon(Icons.password),
+                          prefixIcon: const Icon(Icons.password),
                           isPassword: true,
                           observerText: true,
+                          validator: (value) =>
+                              Validator.validateValue(value, forPass: true),
                         ),
                         const SizedBox(
                           height: 30,
                         ),
                         MyElevetedButton(
-                          onPressed: () {},
+                          onPressed: _signUp,
                           title: 'Sign Up',
                         ),
                         const SizedBox(

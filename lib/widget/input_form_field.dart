@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_chat/widget/utils.dart';
+import 'package:my_chat/helper/utils.dart';
 
 class InputFormField extends StatefulWidget {
   const InputFormField({
@@ -16,6 +16,7 @@ class InputFormField extends StatefulWidget {
     this.suffixIconColor,
     this.preffixIconColor,
     this.textCapitalization = TextCapitalization.none,
+    this.validator,
   });
 
   final String lableText;
@@ -25,7 +26,8 @@ class InputFormField extends StatefulWidget {
   final bool observerText;
   final bool isPassword;
   final bool autocorrect;
-  final void Function(String?)? onSaved;
+  final void Function(String? value)? onSaved;
+  final String? Function(String? value)? validator;
   final TextInputType keyboardType;
   final Color? suffixIconColor;
   final Color? preffixIconColor;
@@ -52,6 +54,7 @@ class _InputFormFieldState extends State<InputFormField> {
       keyboardType: widget.keyboardType,
       autocorrect: widget.autocorrect,
       textCapitalization: widget.textCapitalization,
+      validator: widget.validator,
       decoration: InputDecoration(
         label: Text(widget.lableText),
         border: const OutlineInputBorder(),

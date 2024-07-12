@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_chat/widget/utils.dart';
+import 'package:my_chat/helper/utils.dart';
 
 class MyElevetedButton extends StatelessWidget {
   const MyElevetedButton({
@@ -16,8 +16,8 @@ class MyElevetedButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: getThemeColor(context).primary,
-        foregroundColor: getThemeColor(context).onPrimary,
+        backgroundColor: getThemeColor(context).primaryContainer,
+        foregroundColor: getThemeColor(context).onPrimaryContainer,
         padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10)),
