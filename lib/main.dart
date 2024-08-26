@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_chat/provider/auth_bloc.dart';
 import 'package:my_chat/screen/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -16,13 +18,16 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'FlutterChat',
-      theme: ThemeData().copyWith(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 17, 134, 177)),
+    return BlocProvider(
+      create: (context) => AuthBloc(),
+      child: MaterialApp(
+        title: 'FlutterChat',
+        theme: ThemeData().copyWith(
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color.fromARGB(255, 17, 134, 177)),
+        ),
+        home: const SplasScreen(),
       ),
-      home: const SplasScreen(),
     );
   }
 }

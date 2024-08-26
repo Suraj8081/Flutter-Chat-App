@@ -9,10 +9,20 @@ final ImagePicker _picker = ImagePicker();
 void moveTo(BuildContext context, Widget nextScreen,
     {bool clearRoute = false}) {
   dev.log('Navigate to => $nextScreen');
-  Navigator.of(context).pushAndRemoveUntil(
-    MaterialPageRoute(builder: (ctx) => nextScreen),
-    (route) => !clearRoute,
-  );
+  if (clearRoute) {
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (ctx) => nextScreen,
+      ),
+      (route) => !clearRoute,
+    );
+  } else {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => nextScreen,
+      ),
+    );
+  }
 }
 
 ColorScheme getThemeColor(BuildContext context) {

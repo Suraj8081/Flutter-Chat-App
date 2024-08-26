@@ -22,7 +22,7 @@ class Validator {
     if (forEmail && !isEmailValid(text!)) {
       return 'Incorrect Email ID';
     }
-    if (forPass && !isEmailValid(text!)) {
+    if (forPass && text!.length<6) {
       return 'Password length must be 6';
     }
     return null;

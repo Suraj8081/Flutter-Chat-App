@@ -30,7 +30,6 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
-.vscode/
 build/
 ios/Flutter/Flutter.framework
 ios/Flutter/Flutter.podspec
@@ -55,3 +54,6 @@ local.properties
 /android/app/google-services.json
 /windows/runner
 /windows/flutter
+pubspec.lock
+macos/Flutter
+ios/

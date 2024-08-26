@@ -16,7 +16,11 @@ class _AuthScreenState extends State<AuthScreen> {
   late final GlobalKey<FormState> _formkey;
 
   void _createAccount() {
-    moveTo(context, const SignUpScreen());
+    moveTo(
+      context,
+      const SignUpScreen(),
+      clearRoute: true,
+    );
   }
 
   void _submit() {

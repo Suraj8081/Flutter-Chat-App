@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_chat/helper/utils.dart';
 
@@ -6,15 +7,17 @@ class MyElevetedButton extends StatelessWidget {
     super.key,
     required this.onPressed,
     required this.title,
+    this.isLoading = false,
   });
 
   final void Function() onPressed;
   final String title;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: onPressed,
+      onPressed: isLoading ? null : onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: getThemeColor(context).primaryContainer,
         foregroundColor: getThemeColor(context).onPrimaryContainer,
@@ -23,7 +26,15 @@ class MyElevetedButton extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
       ),
-      child: Text(title),
+      child: Container(
+          width: double.infinity,
+          child: Center(
+            child: isLoading
+                ? CupertinoActivityIndicator(
+                    color: getThemeColor(context).onPrimaryContainer,
+                  )
+                : Text(title),
+          )),
     );
   }
 }
