@@ -25,9 +25,9 @@ class FireOperations {
     );
   }
 
-  Future<DocumentReference<Map<String, dynamic>>> createUser(
+  Future<void> createUser(
       UserProfile userProfile) {
-    return _db.collection(Collections.USERS.name).add(userProfile.toJson());
+    return _db.collection(Collections.USERS.name).doc(userProfile.id!).set(userProfile.toJson());
   }
 
   Future<void> updateUser(UserProfile userProfile) {
@@ -36,6 +36,26 @@ class FireOperations {
         .doc(userProfile.id)
         .update(userProfile.toJson());
   }
+
+  // Future<void> updateProfileUser(UserProfile userProfile) {
+  //   return _db
+  //       .collection(Collections.USERS.name)
+  //       .where('emailId', isEqualTo: userProfile.emailId)
+  //       .get()
+  //       .then(
+  //     (querySnapshot) {
+  //       if (querySnapshot.docs.isNotEmpty) {
+  //         querySnapshot.docs.forEach((element) {
+  //           _db
+  //               .collection(Collections.USERS.name)
+  //               .doc(userProfile.id)
+  //               .update(userProfile.toJson());
+  //         });
+  //       }
+  //     },
+  //     onError: (e) => print("Error completing: $e"),
+  //   );
+  // }
 
   Future<void> logout() {
     return _firebaseAuth.signOut();
@@ -52,6 +72,40 @@ class FireOperations {
     });
     await task;
     return storageRef.getDownloadURL();
+  }
+
+  Future<List<UserProfile>> getAllUser() async {
+    List<UserProfile> userProfileList = [];
+    await _db.collection(Collections.USERS.name).get().then(
+      (querySnapshot) {
+        print("Successfully completed");
+        for (var docSnapshot in querySnapshot.docs) {
+          userProfileList.add(UserProfile.fromJson(docSnapshot.data()));
+          // print('${docSnapshot.id} => ${docSnapshot.data()}');
+        }
+      },
+      onError: (e) => print("Error completing: $e"),
+    );
+    return userProfileList;
+  }
+
+  Future<UserProfile?> getUser(String email) async {
+    UserProfile? userProfile;
+    await _db
+        .collection(Collections.USERS.name)
+        .where('emailId', isEqualTo: email)
+        .get()
+        .then(
+      (querySnapshot) {
+        print("Successfully completed");
+        for (var docSnapshot in querySnapshot.docs) {
+          userProfile = UserProfile.fromJson(docSnapshot.data());
+          // print('${docSnapshot.id} => ${docSnapshot.data()}');
+        }
+      },
+      onError: (e) => print("Error completing: $e"),
+    );
+    return userProfile;
   }
 }
 

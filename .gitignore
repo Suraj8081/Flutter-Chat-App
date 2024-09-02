@@ -57,3 +57,4 @@ local.properties
 pubspec.lock
 macos/Flutter
 ios/
+ios/Podfile.lock

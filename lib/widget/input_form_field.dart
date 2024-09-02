@@ -17,8 +17,10 @@ class InputFormField extends StatefulWidget {
     this.preffixIconColor,
     this.textCapitalization = TextCapitalization.none,
     this.validator,
+    this.initialValue,
+    this.isDisable=false,
   });
-
+  final String? initialValue;
   final String lableText;
   final TextEditingController? textEditingController;
   final Icon? prefixIcon;
@@ -32,6 +34,7 @@ class InputFormField extends StatefulWidget {
   final Color? suffixIconColor;
   final Color? preffixIconColor;
   final TextCapitalization textCapitalization;
+  final bool isDisable;
 
   @override
   State<InputFormField> createState() => _InputFormFieldState();
@@ -53,6 +56,8 @@ class _InputFormFieldState extends State<InputFormField> {
       onSaved: widget.onSaved,
       keyboardType: widget.keyboardType,
       autocorrect: widget.autocorrect,
+      initialValue: widget.initialValue,
+      enabled: !widget.isDisable,
       textCapitalization: widget.textCapitalization,
       validator: widget.validator,
       decoration: InputDecoration(

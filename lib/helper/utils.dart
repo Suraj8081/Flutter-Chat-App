@@ -105,11 +105,16 @@ void _getImage(ImageSource source, Function(File?) selectedFile) async {
   selectedFile(file);
 }
 
-void showSnackBar(BuildContext context, String title) {
+void showSnackBar(BuildContext context, String title,
+    {Color? bgColor, Color? txtColor}) {
   ScaffoldMessenger.of(context).clearSnackBars();
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Text(title),
+      content: Text(
+        title,
+        style: TextStyle(color: txtColor),
+      ),
+      backgroundColor: bgColor,
     ),
   );
 }

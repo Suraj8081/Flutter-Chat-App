@@ -23,8 +23,8 @@ class _SplasScreenState extends State<SplasScreen> {
         if (snapshot.connectionState == ConnectionState.done) {
           Timer(const Duration(seconds: 3), () async {
             if (snapshot.hasData && null != snapshot.data) {
-              // moveTo(context, const DashbordScreen(), clearRoute: true);
-              moveTo(context, const AuthScreen(), clearRoute: true);
+              moveTo(context, const DashbordScreen(), clearRoute: true);
+              // moveTo(context, const AuthScreen(), clearRoute: true);
             } else {
               moveTo(context, const AuthScreen(), clearRoute: true);
             }

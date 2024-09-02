@@ -5,9 +5,10 @@ import 'package:my_chat/model/user_profile.dart';
 abstract class AuthEvent {}
 
 class LoginEvent extends AuthEvent {
-  final UserProfile profile;
+  final String email;
+  final String password;
 
-  LoginEvent(this.profile);
+  LoginEvent(this.email, this.password);
 }
 
 class RegisterEvent extends AuthEvent {

@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_chat/helper/validator.dart';
 import 'package:my_chat/model/user_profile.dart';
-import 'package:my_chat/provider/auth_bloc.dart';
-import 'package:my_chat/provider/auth_event.dart';
-import 'package:my_chat/provider/auth_state.dart';
+import 'package:my_chat/provider/auth/auth_bloc.dart';
+import 'package:my_chat/provider/auth/auth_event.dart';
+import 'package:my_chat/provider/auth/auth_state.dart';
 import 'package:my_chat/screen/auth_screen.dart';
+import 'package:my_chat/screen/dashbord_screen.dart';
 import 'package:my_chat/widget/input_form_field.dart';
 import 'package:my_chat/widget/my_eleveted_button.dart';
 import 'package:my_chat/helper/utils.dart';
@@ -42,7 +43,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         password: password,
         createdDate: DateTime.now().millisecondsSinceEpoch.toString(),
       );
-      _authBloc.add(RegisterEvent(profile,_selectedFile));
+      _authBloc.add(RegisterEvent(profile, _selectedFile));
     }
   }
 
@@ -68,7 +69,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
           showSnackBar(context, state.error);
         } else if (state is RegiseredState) {
           _formkey.currentState!.reset();
-          showSnackBar(context, 'User Register Succesfully..');
+          moveTo(context, const DashbordScreen(), clearRoute: true);
+          showSnackBar(context, 'User Register Succesfully..',
+              bgColor: Colors.green[700]);
         }
       },
       builder: (context, state) {

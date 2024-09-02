@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_chat/helper/utils.dart';
 import 'package:my_chat/screen/chat_screen.dart';
 import 'package:my_chat/screen/profile_screen.dart';
 import 'package:my_chat/screen/update_screen.dart';
@@ -37,6 +38,9 @@ class _DashbordScreenState extends State<DashbordScreen> {
     return Scaffold(
       body: _setScreen(_selectedPosition),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: getThemeColor(context).primary,
+        selectedItemColor: getThemeColor(context).onPrimary,
+        unselectedItemColor: Colors.grey[400],
         onTap: _onTap,
         currentIndex: _selectedPosition,
         items: const [

@@ -15,6 +15,12 @@ class LocalRepo {
     });
   }
 
+  Future<void> clearProfileData() async {
+    _prefs.then((value) {
+      value.setString(PROFILE_DATA, '');
+    });
+  }
+
   Future<UserProfile?> getProfileData() async {
     return _prefs.then((value) {
       var stringValue = value.getString(PROFILE_DATA);
