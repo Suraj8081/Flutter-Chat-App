@@ -58,3 +58,5 @@ pubspec.lock
 macos/Flutter
 ios/
 ios/Podfile.lock
+ios/Podfile.lock
+*.lock

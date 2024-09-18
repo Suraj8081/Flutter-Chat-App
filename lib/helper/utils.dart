@@ -1,6 +1,7 @@
 import 'dart:developer' as dev;
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -64,7 +65,7 @@ void showImagePicker(
             ),
             title: const Text('Photo Library'),
             onTap: () {
-              _getImage(ImageSource.gallery, selectedFile);
+              pickImage(ImageSource.gallery, selectedFile);
               Navigator.of(context).pop();
             },
           ),
@@ -75,7 +76,7 @@ void showImagePicker(
             ),
             title: const Text('Camera'),
             onTap: () {
-              _getImage(ImageSource.camera, selectedFile);
+              pickImage(ImageSource.camera, selectedFile);
               Navigator.of(context).pop();
             },
           ),
@@ -99,8 +100,9 @@ void showImagePicker(
   );
 }
 
-void _getImage(ImageSource source, Function(File?) selectedFile) async {
-  final XFile? pickedFile = await _picker.pickImage(source: source);
+void pickImage(ImageSource source, Function(File?) selectedFile) async {
+  final XFile? pickedFile =
+      await _picker.pickImage(source: source, imageQuality: 30);
   final File? file = pickedFile != null ? File(pickedFile.path) : null;
   selectedFile(file);
 }
@@ -115,6 +117,23 @@ void showSnackBar(BuildContext context, String title,
         style: TextStyle(color: txtColor),
       ),
       backgroundColor: bgColor,
+      showCloseIcon: true,
     ),
   );
+}
+
+void pickFile(Function(List<File> file) selectedFile,
+    {bool multipleSelection = false}) async {
+  FilePickerResult? result = await FilePicker.platform.pickFiles(
+    allowMultiple: multipleSelection,
+    type: FileType.custom,
+    allowedExtensions: ['jpg', 'pdf', 'doc'],
+  );
+
+  if (result != null) {
+    List<File> files = result.paths.map((path) => File(path!)).toList();
+    selectedFile(files);
+  } else {
+    print("No file selected");
+  }
 }

@@ -1,6 +1,5 @@
 import 'dart:developer' as dev;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_chat/firebase_operations.dart';
@@ -10,7 +9,7 @@ import 'package:my_chat/provider/auth/auth_event.dart';
 import 'package:my_chat/provider/auth/auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthSate> {
-  final FireOperations fireOperations = FireOperations();
+  final FirebaseOperations fireOperations = FirebaseOperations();
 
   AuthBloc() : super(AuthInitialState()) {
     on<RegisterEvent>(_userRegiser);
@@ -32,7 +31,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthSate> {
         //upload Profile
         if (event.profileImage != null) {
           imageUrl = await fireOperations.uploadImage(
-              Collections.USERS_IMAGE.name,
+              Collections.usersImage.name,
               userCredential.user!.uid,
               event.profileImage!);
           dev.log('Profile Image : $imageUrl');
@@ -42,8 +41,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthSate> {
           profileimage: imageUrl,
         );
         await fireOperations.createUser(profile);
-
-        // await fireOperations.updateUser(profile);
 
         //save Data
         await LocalRepo().setProfileData(profile);

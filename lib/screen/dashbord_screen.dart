@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_chat/helper/utils.dart';
-import 'package:my_chat/screen/chat_screen.dart';
+import 'package:my_chat/screen/dashboard_chat_screen.dart';
 import 'package:my_chat/screen/profile_screen.dart';
 import 'package:my_chat/screen/update_screen.dart';
 
@@ -23,13 +23,13 @@ class _DashbordScreenState extends State<DashbordScreen> {
   Widget _setScreen(int index) {
     switch (index) {
       case 0:
-        return const ChatScreen();
+        return const DashboardChatScreen();
       case 1:
         return const UpdateScreen();
       case 2:
         return const ProfileScreen();
       default:
-        return const ChatScreen();
+        return const DashboardChatScreen();
     }
   }
 

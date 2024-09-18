@@ -2,7 +2,7 @@ import 'package:my_chat/model/user_profile.dart';
 
 abstract class DashboardState {}
 
-class InitialChatState extends DashboardState {}
+class InitialDashboardState extends DashboardState {}
 
 class LoadingState extends DashboardState {
   bool isLoading;

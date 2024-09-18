@@ -8,9 +8,9 @@ import 'package:my_chat/provider/dashbord/dashboard_event.dart';
 import 'package:my_chat/provider/dashbord/dashboard_state.dart';
 
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
-  final FireOperations fireOperations = FireOperations();
+  final FirebaseOperations fireOperations = FirebaseOperations();
 
-  DashboardBloc() : super(InitialChatState()) {
+  DashboardBloc() : super(InitialDashboardState()) {
     on<GetChatUserEvent>(_getUserList);
     on<ProfileUpdateEvent>(_userUpdate);
     on<LogoutUserEvent>(_logoutUser);
@@ -20,8 +20,14 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       GetChatUserEvent event, Emitter<DashboardState> emitter) async {
     emitter(LoadingState(isLoading: true));
     List<UserProfile> list = await fireOperations.getAllUser();
-    emitter(LoadingState(isLoading: false));
-    emitter(FetchedUserChatState(list));
+
+    UserProfile? userProfile = await LocalRepo().getProfileData();
+    if (userProfile != null) {
+      List<UserProfile> filterList =
+          list.where((user) => user.emailId != userProfile.emailId).toList();
+      emitter(LoadingState(isLoading: false));
+      emitter(FetchedUserChatState(filterList));
+    }
   }
 
   void _userUpdate(
@@ -33,7 +39,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       //upload Profile
       if (event.selectedFile != null) {
         imageUrl = await fireOperations.uploadImage(
-          Collections.USERS_IMAGE.name,
+          Collections.usersImage.name,
           event.userProfile.id!,
           event.selectedFile!,
         );
@@ -43,7 +49,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         profileimage: imageUrl,
       );
 
-      await fireOperations.updateProfileUser(profile);
+      await fireOperations.updateUser(profile);
 
       //save Data
       await LocalRepo().setProfileData(profile);
@@ -56,7 +62,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
   void _logoutUser(
       LogoutUserEvent event, Emitter<DashboardState> emitter) async {
-      //save Data
+    //save Data
     await LocalRepo().clearProfileData();
     fireOperations.logout();
 

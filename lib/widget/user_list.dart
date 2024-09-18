@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_chat/helper/utils.dart';
 import 'package:my_chat/model/user_profile.dart';
+import 'package:my_chat/screen/chat_screen.dart';
 
 class UserList extends StatelessWidget {
   const UserList({super.key, required this.userProfile});
@@ -9,6 +11,9 @@ class UserList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: () {
+        moveTo(context, ChatScreen(senderProfile: userProfile));
+      },
       leading: CircleAvatar(
         radius: 40,
         backgroundImage: userProfile.profileimage != null
