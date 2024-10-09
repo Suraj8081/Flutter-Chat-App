@@ -16,9 +16,10 @@ class UserList extends StatelessWidget {
       },
       leading: CircleAvatar(
         radius: 40,
-        backgroundImage: userProfile.profileimage != null
+        backgroundImage: (userProfile.profileimage != null &&
+                userProfile.profileimage!.isNotEmpty)
             ? NetworkImage(userProfile.profileimage!)
-            : const NetworkImage('url'),
+            : const AssetImage('assets/images/user.png') as ImageProvider,
       ),
       title: Text(
         userProfile.name!,

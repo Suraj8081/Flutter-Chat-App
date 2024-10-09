@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:chat_bubbles/message_bars/message_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,6 +15,8 @@ import 'package:my_chat/provider/chat/chat_event.dart';
 import 'package:my_chat/provider/chat/chat_state.dart';
 import 'package:my_chat/widget/chat_messages.dart';
 import 'package:my_chat/widget/chat_other_option.dart';
+
+import '../widget/my_eleveted_button.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key, required this.senderProfile});
@@ -34,9 +35,7 @@ class _ChatScreenState extends State<ChatScreen> {
   late UserProfile myProfile;
 
   void setupPushNotification(String chatNode) async {
-    FirebaseMessaging fcm = FirebaseMessaging.instance;
-    fcm.requestPermission();
-    fcm.subscribeToTopic(chatNode);
+    firebaseOperations.subscibeNode(chatNode);
   }
 
   @override
@@ -107,8 +106,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                   return GestureDetector(
                                     key: ValueKey(chat.id),
                                     onLongPressStart: (details) {
-                                      _showPopupMenu(context,
-                                          details.globalPosition, chat);
+                                      if (chat.sendBy == myProfile.id) {
+                                        _showPopupMenu(context,
+                                            details.globalPosition, chat);
+                                      }
                                     },
                                     child: ChatMessages(
                                       chatModel: chat,
@@ -223,7 +224,39 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         PopupMenuItem(
           child: const Text('Edit'),
-          onTap: () {},
+          onTap: () {
+            TextEditingController msgEditController = TextEditingController();
+            msgEditController.text = chatModel.chatTitle;
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: const Text('Edit Msg'),
+                  content: TextField(
+                    keyboardType: TextInputType.text,
+                    controller: msgEditController,
+                  ),
+                  actions: [
+                    MyElevetedButton(
+                      onPressed: () {
+                        if (msgEditController.text.isNotEmpty) {
+                          firebaseOperations.editChat(
+                              chatNode,
+                              chatModel.copyWith(
+                                  chatTitle: msgEditController.text));
+                            Navigator.pop(context);
+                          // msgEditController.dispose();
+                        } else {
+                          // msgEditController.dispose();
+                        }
+                      },
+                      title: 'Edit',
+                    ),
+                  ],
+                );
+              },
+            );
+          },
         ),
       ],
     );

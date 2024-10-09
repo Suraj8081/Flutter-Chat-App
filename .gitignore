@@ -60,3 +60,5 @@ ios/
 ios/Podfile.lock
 ios/Podfile.lock
 *.lock
+*.lock
+*.swift

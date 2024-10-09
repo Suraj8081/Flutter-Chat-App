@@ -62,10 +62,14 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
   void _logoutUser(
       LogoutUserEvent event, Emitter<DashboardState> emitter) async {
-    //save Data
-    await LocalRepo().clearProfileData();
-    fireOperations.logout();
+    UserProfile? userProfile = await LocalRepo().getProfileData();
+    if (userProfile != null) {
+      await fireOperations.unsubscibeAllNode(userProfile.id!);
+      //save Data
+      await LocalRepo().clearProfileData();
+      fireOperations.logout();
 
-    emitter(LoggedOutState());
+      emitter(LoggedOutState());
+    }
   }
 }

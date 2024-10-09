@@ -64,7 +64,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   void _sendMsg(ChatSendEvent event, Emitter<ChatState> emitter) async {
     UserProfile? userProfile = await localRepo.getProfileData();
     if (userProfile != null) {
-      firebaseOperations.sendChat(event.chatModel, event.chatNode);
+      firebaseOperations.sendChat(event.chatModel, event.chatNode,userProfile);
     }
     emitter(ChatSendedState());
   }

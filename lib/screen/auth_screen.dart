@@ -48,8 +48,8 @@ class _AuthScreenState extends State<AuthScreen> {
     return BlocConsumer<AuthBloc, AuthSate>(
       listener: (context, state) {
         if (state is LoggedState) {
-          showSnackBar(context, 'Login Succeefully',
-              bgColor: Colors.green[700]);
+          // showSnackBar(context, 'Login Succeefully',
+          //     bgColor: Colors.green[700]);
           moveTo(context, const DashbordScreen(), clearRoute: true);
         } else if (state is AuthErrorState) {
           showSnackBar(context, state.error, bgColor: Colors.red[700]);

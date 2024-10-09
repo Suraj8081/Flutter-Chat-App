@@ -4,17 +4,21 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:my_chat/helper/local_repo.dart';
 import 'package:my_chat/model/chat_model.dart';
 import 'package:my_chat/model/user_profile.dart';
+import 'package:my_chat/network/send_notification_helper.dart';
 
 class FirebaseOperations {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseDatabase _chatDb = FirebaseDatabase.instance;
+  FirebaseMessaging fcm = FirebaseMessaging.instance;
   final _storageBucket = FirebaseStorage.instance.ref();
   final LocalRepo localRepo = LocalRepo();
+  final SendNotificationHelper sendNotification = SendNotificationHelper();
 
   Future<UserCredential> authenticateUser(String email, String password) {
     return _firebaseAuth.createUserWithEmailAndPassword(
@@ -126,12 +130,13 @@ class FirebaseOperations {
     return chatNodeId;
   }
 
-  void sendChat(ChatModel chatModel, String chatNode) {
+  void sendChat(ChatModel chatModel, String chatNode, UserProfile userProfile) {
     DatabaseReference chatNodeRef =
         _chatDb.ref().child(Collections.chatMessages.name).child(chatNode);
     String? msgId = chatNodeRef.push().key;
     ChatModel chat = chatModel.copyWith(id: msgId);
     chatNodeRef.child(msgId!).update(chat.toJson());
+    sendNotification.sendNotification(chatModel, chatNode, userProfile);
   }
 
   Stream<DatabaseEvent> getAllMsg(String chatNode) {
@@ -159,6 +164,46 @@ class FirebaseOperations {
         .child(chatNode)
         .child(chatModel.id!)
         .set(chatModel.toJson());
+  }
+
+  Future<void> unsubscibeAllNode(String senderId) async {
+    DatabaseReference chatsRef = _chatDb.ref().child(Collections.chats.name);
+
+    DataSnapshot snapshot = await chatsRef.get();
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic> chats = snapshot.value as Map<dynamic, dynamic>;
+
+      chats.forEach((chatId, chatData) {
+        List<dynamic> members = chatData['members'];
+
+        if (members.contains(senderId)) {
+          fcm.unsubscribeFromTopic(chatId);
+          dev.log('unsubscribe topic and chat id:$chatId',name: 'unsubscribe topic');
+        }
+      });
+    }
+  }
+
+  Future<void> subscibeAllNode(String senderId) async {
+    DatabaseReference chatsRef = _chatDb.ref().child(Collections.chats.name);
+
+    DataSnapshot snapshot = await chatsRef.get();
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic> chats = snapshot.value as Map<dynamic, dynamic>;
+
+      chats.forEach((chatId, chatData) {
+        List<dynamic> members = chatData['members'];
+
+        if (members.contains(senderId)) {
+          fcm.subscribeToTopic(chatId);
+          dev.log('subscribe topic and chat id:$chatId',name: 'subscribe topic');
+        }
+      });
+    }
+  }
+
+  void subscibeNode(String nodeId) {
+    fcm.subscribeToTopic(nodeId);
   }
 }
 

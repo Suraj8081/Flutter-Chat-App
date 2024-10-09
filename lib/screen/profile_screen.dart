@@ -34,7 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (isValidate) {
       _formkey.currentState!.save();
-      UserProfile updateProfile= userProfile.copyWith(
+      UserProfile updateProfile = userProfile.copyWith(
         name: name,
         emailId: email,
         password: password,
@@ -283,4 +283,10 @@ Widget profileImageView(
             selectedFile,
           ),
         );
+}
+
+Widget themeChage() {
+  return const Column(
+    children: [],
+  );
 }

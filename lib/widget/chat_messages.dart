@@ -19,6 +19,7 @@ class ChatMessages extends StatelessWidget {
   Widget build(BuildContext context) {
     if (chatModel.chatType == ChatType.text) {
       return textUI(chatModel, context, myUserId);
+      // return docUI(chatModel, context, myUserId);
     }
 
     if (chatModel.chatType == ChatType.image) {
@@ -74,6 +75,21 @@ Widget imageUI(ChatModel chatModel, BuildContext context, String myUserId) {
       isSender: chatModel.sendBy == myUserId,
       delivered: true,
       seen: chatModel.isRead == '1',
+    ),
+  );
+}
+
+Widget docUI(ChatModel chatModel, BuildContext context, String myUserId) {
+  return SizedBox(
+    width: 100,
+    child: Row(
+      children: [
+        Image.asset(
+          'assets/images/doc.png',
+          width: 50,
+          height: 50,
+        )
+      ],
     ),
   );
 }

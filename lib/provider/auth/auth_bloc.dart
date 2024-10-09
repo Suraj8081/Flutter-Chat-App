@@ -75,6 +75,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthSate> {
         if (userProfile != null) {
           //save Data
           await LocalRepo().setProfileData(userProfile);
+          //subscribe all chat node
+        await fireOperations.subscibeAllNode(userProfile.id!);
           emit(LoggedState());
         } else {
           emit(AuthErrorState('User Data Not Found'));
