@@ -9,6 +9,7 @@ final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 class LocalRepo {
   static const String PROFILE_DATA = "profile_data";
   static const String FCM_TOKEN = "fcm_token";
+  static const String THEME_MODE = "theme_mode";
 
   Future<void> setProfileData(UserProfile profile) async {
     _prefs.then((value) {
@@ -28,11 +29,23 @@ class LocalRepo {
     });
   }
 
-  Future<String?> getFCMToken(String? token) async {
+  Future<void> setThemeMode(String? mode) async {
+    // 0=light and 1=dark
     _prefs.then((value) {
+      value.setString(THEME_MODE, mode ?? '0');
+    });
+  }
+
+  Future<String?> getThemeMode() async {
+    return _prefs.then((value) {
+      return value.getString(THEME_MODE);
+    });
+  }
+
+  Future<String?> getFCMToken() async {
+    return _prefs.then((value) {
       return value.getString(FCM_TOKEN);
     });
-    return null;
   }
 
   Future<UserProfile?> getProfileData() async {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_chat/helper/local_repo.dart';
 import 'package:my_chat/helper/validator.dart';
+import 'package:my_chat/main.dart';
 import 'package:my_chat/model/user_profile.dart';
 import 'package:my_chat/provider/dashbord/dashboard_bloc.dart';
 import 'package:my_chat/provider/dashbord/dashboard_event.dart';
@@ -236,8 +237,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Positioned(
               right: 0,
               top: 0,
-              child: Container(
-                margin: const EdgeInsets.fromLTRB(0, 80, 10, 0),
+              child: SafeArea(
                 child: IconButton(
                   icon: const Icon(
                     Icons.logout,
@@ -246,6 +246,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   onPressed: _logout,
                 ),
+              ),
+            ),
+            Positioned(
+              left: 0,
+              top: 0,
+              child: SafeArea(
+                child: FutureBuilder(
+                    future: LocalRepo().getThemeMode(),
+                    builder: (context, snapshot) {
+                      if ((snapshot.connectionState == ConnectionState.done)) {
+                        String mode = snapshot.data ?? '0';
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: themeMode(
+                            context,
+                            mode == '1' ? true : false,
+                            (value) {
+                              setState(() {
+                                updateTheme(value);
+                                if (value) {
+                                  App.of(context)!.changeTheme(ThemeMode.dark);
+                                } else {
+                                  App.of(context)!.changeTheme(ThemeMode.light);
+                                }
+                              });
+                            },
+                          ),
+                        );
+                      }
+                      return const SizedBox();
+                    }),
               ),
             ),
           ],
@@ -285,8 +316,26 @@ Widget profileImageView(
         );
 }
 
-Widget themeChage() {
-  return const Column(
-    children: [],
+Widget themeMode(
+    BuildContext context, bool currentMode, Function(bool)? onChanged) {
+  return Row(
+    children: [
+      Icon(
+        Icons.light_mode,
+        color: getThemeColor(context).onPrimary,
+      ),
+      Switch(
+        value: currentMode,
+        onChanged: onChanged,
+      ),
+      Icon(
+        Icons.dark_mode,
+        color: getThemeColor(context).onPrimary,
+      ),
+    ],
   );
+}
+
+void updateTheme(bool value) async {
+  await LocalRepo().setThemeMode(value ? '1' : '0');
 }

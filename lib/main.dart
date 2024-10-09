@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:my_chat/helper/local_repo.dart';
 import 'package:my_chat/provider/auth/auth_bloc.dart';
 import 'package:my_chat/provider/chat/chat_bloc.dart';
 import 'package:my_chat/provider/dashbord/dashboard_bloc.dart';
@@ -49,7 +50,6 @@ void requestNotificationPermission() async {
       print('Notification Click onDidReceiveNotificationResponse');
     },
   );
-
 
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
     handleNotificationClick(message);
@@ -111,6 +111,8 @@ void _handleMessage(RemoteMessage message) {
   }
 }
 
+ThemeMode _themeMode = ThemeMode.light;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -119,12 +121,24 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   requestNotificationPermission();
+  getCurrentTheme(
+    (mode) {
+      _themeMode = mode;
+    },
+  );
   runApp(const App());
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({super.key});
 
+  @override
+  State<App> createState() => _AppState();
+  static _AppState? of(BuildContext context) =>
+      context.findAncestorStateOfType<_AppState>();
+}
+
+class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -135,12 +149,37 @@ class App extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'FlutterChat',
-        theme: ThemeData().copyWith(
+        themeMode: _themeMode,
+        darkTheme: ThemeData.dark().copyWith(
+          brightness: Brightness.dark,
           colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color.fromARGB(255, 17, 134, 177)),
+            seedColor: const Color.fromARGB(255, 102, 6, 247),
+          ),
+        ),
+        theme: ThemeData.light().copyWith(
+          brightness: Brightness.dark,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 17, 134, 177),
+          ),
         ),
         home: const SplasScreen(),
       ),
     );
+  }
+
+  void changeTheme(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
+    });
+  }
+}
+
+Future<void> getCurrentTheme(Function(ThemeMode) currentMode) async {
+  String? mode = await LocalRepo().getThemeMode();
+  if (mode != null) {
+    mode == '0' ? currentMode(ThemeMode.light) : currentMode(ThemeMode.dark);
+  } else {
+    await LocalRepo().setThemeMode('0');
+    currentMode(ThemeMode.light);
   }
 }
